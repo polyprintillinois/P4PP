@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
   <img src="assets/icon.png" alt="P4PP Logo" width="140" />
   <h1>P4PP</h1>
   <p><b>Precision 4-Point Probe Controller</b></p>
@@ -20,6 +20,23 @@ It provides:
 
 Target metric: **Sheet Resistance (Rs, Ohm/sq)**.
 
+## Quick Start (1 Minute)
+
+1. Download latest release: https://github.com/changhwang/P4PP/releases/latest
+2. In release assets, download `P4PP.zip`.
+3. Extract to a stable folder (example: `C:\Tools\P4PP`).
+4. Open extracted `P4PP` folder and run `P4PP.exe`.
+5. In the app, keep the default `R_set = 681 ohm`, then select `MOCK` and validate `Connect -> Home -> Measure`.
+
+Important:
+
+- Keep the extracted `P4PP` folder structure as-is.
+- Do not move `P4PP.exe` outside the `P4PP` folder.
+
+## App Screenshot
+
+![P4PP main window screenshot](assets/app_screenshot.png)
+
 ## Highlights
 
 - Live GUI for connect/home/move/measure workflow
@@ -29,41 +46,32 @@ Target metric: **Sheet Resistance (Rs, Ohm/sq)**.
 - History CSV export
 - Explicit controller state handling
 
-## Install (Recommended)
+## Hardware Bring-Up (Real Device)
 
-Use prebuilt binaries from **GitHub Releases**.
+Before using real hardware:
 
-1. Open the repository Releases page.
-2. Download the latest `P4PP.zip`.
-3. Extract it to a folder (example: `C:\Tools\P4PP`).
-4. Run `P4PP.exe` from inside the extracted `P4PP` folder.
+1. Flash firmware: `firmware/p4pp_firmware/p4pp_firmware.ino`
+2. Confirm COM port in Windows Device Manager.
+3. Complete wiring and calibration checks in docs below.
 
-Important:
+`R_set` guidance:
 
-- Keep the `P4PP` folder structure as-is.
-- Do not move `P4PP.exe` outside that folder.
+- Default startup mode is `681 ohm` (`~0.1 mA`), which is the safer general-purpose option for initial bring-up.
+- Switch to `68.1 ohm` (`~1 mA`) for lower-resistance samples such as ITO when you need stronger signal.
 
-## Hardware Prerequisites
+Read docs in this order:
 
-- Flash Arduino firmware:
-  - `firmware/p4pp_firmware/p4pp_firmware.ino`
-- Confirm serial COM port is visible in Device Manager.
-- Complete wiring and bring-up using the docs below.
+1. [4PP Master Guide](docs/4pp_master_guide.md)
+2. [Analog Wiring Guide](docs/analog_wiring_guide.md)
+3. [Movement Implementation Guide](docs/movement_implementation_guide.md)
+4. [App Architecture](docs/app_architecture.md)
 
-## Setup Docs (Read in Order)
+## First Real Measurement Checklist
 
-1. `docs/4pp_master_guide.md`
-2. `docs/analog_wiring_guide.md`
-3. `docs/movement_implementation_guide.md`
-4. `docs/app_architecture.md`
-
-## First Run Workflow
-
-1. Launch app.
-2. Select `MOCK` and test connect/home/move/measure.
-3. Verify graph + CSV output behavior.
-4. Switch to real COM port and connect hardware.
-5. Run a low-risk test measurement.
+1. Pass full `MOCK` workflow first.
+2. Switch to real COM port and connect.
+3. Run one low-risk test sample.
+4. Confirm graph updates and CSV output in `data/`.
 
 ## Troubleshooting
 
@@ -73,14 +81,25 @@ Important:
 - Ensure no other application is holding the port.
 - Re-test with `MOCK` mode first.
 
+### App does not start (`ModuleNotFoundError: tkinter`)
+
+- Use the official release package (`P4PP.zip`) from Releases.
+- If you built locally, use Python 3.11 and rebuild with `P4PP.spec`.
+
+### Measured result stays near `0.00`
+
+- Confirm the Arduino firmware is updated together with the PC app.
+- `681 ohm` mode is intended for higher-resistance samples; low-resistance films may require `68.1 ohm`.
+
 ### Build/runtime metadata error (`PackageNotFoundError: p4pp`)
 
 - Build with `main.py` as entry script.
 - Use the provided `P4PP.spec`.
 
-### Build instability on older Python environments
+### Build instability on mixed Python environments
 
-- Build using Python 3.12 virtual environment.
+- Build using a clean Python 3.11 virtual environment.
+- Clear `PYTHONPATH` before packaging to avoid external site-package contamination.
 
 ---
 
@@ -90,20 +109,20 @@ Important:
 
 ```text
 P4PP/
-├─ assets/               # logo/icons
-├─ data/                 # measurement outputs
-├─ docs/                 # English docs
-├─ firmware/             # Arduino firmware
-├─ src/p4pp/             # application source
-├─ main.py               # app entry point
-├─ P4PP.spec             # PyInstaller spec
-└─ setup.py              # package metadata
+|- assets/               # logo/icons
+|- data/                 # measurement outputs
+|- docs/                 # English docs
+|- firmware/             # Arduino firmware
+|- src/p4pp/             # application source
+|- main.py               # app entry point
+|- P4PP.spec             # PyInstaller spec
+`- setup.py              # package metadata
 ```
 
 ### Local Run
 
 ```powershell
-py -3.12 -m venv venv
+py -3.11 -m venv venv
 .\venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -e .
@@ -113,10 +132,11 @@ python main.py
 ### Build
 
 ```powershell
-py -3.12 -m venv build_venv
+py -3.11 -m venv build_venv
 .\build_venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install pyserial customtkinter matplotlib Pillow pyinstaller
+$env:PYTHONPATH = ""
 python -m PyInstaller --noconfirm --clean P4PP.spec
 ```
 
@@ -133,5 +153,8 @@ Output:
 
 ## License
 
-Internal R&D project unless otherwise specified.
-Validate safety and calibration before production usage.
+P4PP is released under the [MIT License](LICENSE).
+
+Copyright (c) 2026 Changhyun Hwang, Diao Research Group, University of Illinois at Urbana-Champaign.
+
+Validate safety and calibration before production use.
