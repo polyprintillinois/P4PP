@@ -5,6 +5,8 @@
   <p>Windows GUI for operating a 4-point probe system and logging sheet resistance measurements.</p>
 </div>
 
+This repository accompanies **Hwang, Elangovan, Damron, Kwok, Jeon & Diao, "Democratizing Lab Automation through Multi-Agent-Assisted Design and 3D Printing"** (submitted, 2026). Archived release: Zenodo DOI [to be added]. Code is released under the MIT licence; printed-part designs (STL) and documentation may be reused under the same terms with attribution.
+
 ---
 
 ## Overview
@@ -22,7 +24,7 @@ Target metric: **Sheet Resistance (Rs, Ohm/sq)**.
 
 ## Quick Start (1 Minute)
 
-1. Download latest release: https://github.com/changhwang/P4PP/releases/latest
+1. Download latest release: https://github.com/polyprintillinois/P4PP/releases/latest
 2. In release assets, download `P4PP.zip`.
 3. Extract to a stable folder (example: `C:\Tools\P4PP`).
 4. Open extracted `P4PP` folder and run `P4PP.exe`.
@@ -32,6 +34,24 @@ Important:
 
 - Keep the extracted `P4PP` folder structure as-is.
 - Do not move `P4PP.exe` outside the `P4PP` folder.
+
+## First run (hello world)
+
+1. For real hardware, flash `firmware/p4pp_firmware/p4pp_firmware.ino` to the Arduino Nano 33 IoT. Connect the 12 V / 60 W adapter (relay coil and stepper drivers) and the USB cable (logic and 3.3 V analog rail).
+2. Launch the GUI (`P4PP.zip` from Releases, or `python main.py`) and connect. Without hardware, select `MOCK` in the port list and click **Connect**; this runs the GUI against `src/p4pp/driver/mock_hardware.py`. Click **Initialize**, leave the geometry at **Infinite Sheet**, and click **Measure**. The expected synthetic result is approximately 687 Ω/sq.
+3. With real hardware, select the Arduino COM port and click **Connect**. Click **HOME** for both axes (Z probe lift and θ sample rotation), or click **Initialize** to home them in sequence. Each axis should complete a fast switch seek, back-off, and slow re-approach.
+4. Insert the 68.1 Ω set resistor (approximately 1 mA), place a reference sample of known sheet resistance (for example, ITO-coated glass), select the sample geometry, and click **Measure**. One delta-mode cycle takes approximately 0.3 s; five cycles are averaged by default (up to 20 may be selected).
+5. The reported sheet resistance should fall within `0.90 × R_ref` to `1.10 × R_ref` (the approximately 10% agreement obtained against a commercial four-point-probe system in the paper), with a cycle-to-cycle CV below 0.1%. Re-landing the probe on the same spot should reproduce the value within approximately 2%.
+6. Swap in the 681 Ω set resistor (approximately 100 µA) for samples in the kΩ/sq range.
+
+If readings are physically implausible (negative, or identical for forward and reverse polarity), check the DPDT relay wiring: both poles must switch. See the [Analog Wiring Guide](docs/analog_wiring_guide.md).
+
+## Safety
+
+- The probe head descends with approximately 3.3 N total tip force (85 gf × 4) and has sharp tungsten tips. Keep fingers clear of the sample stage while the Z axis is moving, and never reach under the probe head.
+- 12 V is present on the driver and relay board; the analog section runs from the 3.3 V rail. Disconnect the adapter before rewiring.
+- Do not touch the sample or probe during a measurement cycle. The relay reverses current polarity within each cycle, and contact changes corrupt the reading.
+- Handle doped polymer films and dopant solutions (for example, Magic Blue in acetonitrile) with gloves in a fume hood. The instrument itself does not contain solvents.
 
 ## App Screenshot
 

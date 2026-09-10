@@ -1,0 +1,53 @@
+{
+  "title": "P4PP: Precision 4-Point Probe system for automated sheet-resistance measurement (firmware, GUI, CAD/STL, documentation)",
+  "description": "This repository accompanies the manuscript \"Democratizing Lab Automation through Multi-Agent-Assisted Design and 3D Printing\" (Hwang et al., submitted to Digital Discovery, 2026). P4PP is an automated four-point-probe platform with motorized probe landing and sample rotation, an LM334 current source with per-cycle shunt current readback, an ADS1220 24-bit ADC, and DPDT relay polarity reversal for delta-mode measurement. The repository contains the Arduino Nano 33 IoT firmware, the customtkinter host GUI, STL files, the bill of materials, and wiring, measurement and implementation guides.",
+  "creators": [
+    {
+      "name": "Hwang, Changhyun",
+      "affiliation": "University of Illinois Urbana-Champaign",
+      "orcid": "0000-0003-1720-7852"
+    },
+    {
+      "name": "Elangovan, Kavinraaj Ella",
+      "affiliation": "University of Illinois Urbana-Champaign"
+    },
+    {
+      "name": "Damron, Alec M.",
+      "affiliation": "University of Illinois Urbana-Champaign"
+    },
+    {
+      "name": "Kwok, Justin J.",
+      "affiliation": "University of Illinois Urbana-Champaign"
+    },
+    {
+      "name": "Jeon, Sanghyun",
+      "affiliation": "University of Illinois Urbana-Champaign"
+    },
+    {
+      "name": "Diao, Ying",
+      "affiliation": "University of Illinois Urbana-Champaign",
+      "orcid": "0000-0002-8984-0051"
+    }
+  ],
+  "license": "mit",
+  "upload_type": "software",
+  "access_right": "open",
+  "keywords": [
+    "lab automation",
+    "four-point probe",
+    "sheet resistance",
+    "open hardware",
+    "3D printing",
+    "Arduino",
+    "delta mode",
+    "conductive polymers"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/polyprintillinois/P4PP",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "notes": "Code, design files and documentation released with the manuscript; see the repository README for build and usage instructions."
+}
